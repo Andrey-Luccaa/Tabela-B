@@ -1,0 +1,215 @@
+/* --- FONTE CUSTOMIZADA --- */
+@font-face {
+    font-family: 'Unispace';
+    src: url('../font/Unispace Rg.otf') format('opentype'); 
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* --- RESET E CONFIGURAÇÕES GERAIS --- */
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --bg-dark: #050a0a;
+    --bg-medium: #0f1f1f;
+    --bg-light: #1b3d3d;
+    --accent-cyan: #00d9ff;
+    --g4-color: #00ff88;
+    --z4-color: #ff4d4d;
+    --text-muted: rgba(187, 241, 187, 0.7);
+}
+
+body {
+    min-height: 100vh;
+    color: white;
+    /* Gradiente Animado Série B: Verde Petróleo Profundo */
+    background: linear-gradient(-45deg, var(--bg-dark), var(--bg-medium), var(--bg-light), #0a1414);
+    background-size: 400% 400%;
+    font-family: 'Unispace', sans-serif; 
+    animation: gradientAnim 12s ease infinite; 
+    overflow-x: hidden;
+}
+
+@keyframes gradientAnim {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* --- TÍTULO E LOGO --- */
+.ctitle {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 0;
+    text-align: center;
+}
+
+.ititle img {
+    width: 140px;
+    transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    cursor: pointer;
+    filter: drop-shadow(0 0 15px rgba(0, 217, 255, 0.3));
+}
+
+.ititle img:hover { 
+    transform: scale(1.1) rotate(2deg); 
+    filter: drop-shadow(0 0 25px var(--accent-cyan));
+}
+
+.ntitle h1 {
+    font-size: 1.8rem;
+    letter-spacing: 3px;
+    margin-top: 10px;
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+/* --- CONTAINER E TABELA --- */
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+    padding: 0 20px 80px 20px;
+}
+
+table {
+    width: 100%;
+    max-width: 1150px;
+    margin: 20px auto;
+    border-collapse: collapse;
+    backdrop-filter: blur(20px);
+    background: rgba(0, 0, 0, 0.3); 
+    box-shadow: 0px 30px 60px rgba(0, 0, 0, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+/* --- CABEÇALHO --- */
+#titulos th {
+    background: rgba(0, 0, 0, 0.9);
+    padding: 18px 12px;
+    font-size: 0.8rem;
+    color: var(--accent-cyan);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    border-bottom: 2px solid rgba(0, 217, 255, 0.2);
+}
+
+#class { text-align: left; padding-left: 25px; }
+
+/* --- CÉLULAS E LINHAS --- */
+tr {
+    transition: all 0.3s ease;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    cursor: pointer;
+}
+
+td {
+    padding: 15px 10px;
+    text-align: center;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+/* Coluna do Nome do Time */
+td:first-child {
+    text-align: left;
+    min-width: 280px;
+    background: rgba(0, 0, 0, 0.15);
+}
+
+.team-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding-left: 10px;
+}
+
+.pos-num {
+    min-width: 35px;
+    font-weight: bold;
+    opacity: 0.5;
+    font-size: 0.8rem;
+}
+
+.timelogo {
+    width: 26px;
+    height: 26px;
+    object-fit: contain;
+    filter: drop-shadow(0 0 4px rgba(0,0,0,0.5));
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* --- DESTAQUES DE COLUNA --- */
+/* Coluna de Pontos (P) */
+td:nth-child(2) {
+    font-weight: bold;
+    color: var(--g4-color);
+    font-size: 1.1rem;
+    text-shadow: 0 0 10px rgba(0, 255, 136, 0.2);
+}
+
+/* --- EFEITOS DE HOVER (INTERATIVIDADE) --- */
+tr:hover {
+    background: rgba(255, 255, 255, 0.06);
+}
+
+tr:hover .pos-num {
+    opacity: 1;
+    color: var(--time-color);
+}
+
+tr:hover .timelogo {
+    transform: scale(1.4) translateX(5px);
+    filter: drop-shadow(0 0 10px var(--time-color));
+}
+
+tr:hover .team-info span:last-child {
+    transform: translateX(10px);
+    color: #fff;
+    text-shadow: 0 0 12px var(--time-color);
+}
+
+/* --- ZONAS DE CLASSIFICAÇÃO (Bordas) --- */
+/* Estilo aplicado via JS baseado no Index */
+.g4-border { 
+    border-left: 5px solid var(--g4-color) !important; 
+    box-shadow: inset 10px 0 20px -10px rgba(0, 255, 136, 0.2);
+}
+
+.z4-border { 
+    border-left: 5px solid var(--z4-color) !important; 
+    box-shadow: inset 10px 0 20px -10px rgba(255, 77, 77, 0.2);
+}
+
+/* --- BOTÕES --- */
+.btn-reset {
+    background: transparent;
+    color: var(--z4-color);
+    border: 1px solid var(--z4-color);
+    padding: 12px 25px;
+    border-radius: 4px;
+    font-family: 'Unispace', sans-serif;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+    letter-spacing: 1px;
+}
+
+.btn-reset:hover {
+    background: var(--z4-color);
+    color: white;
+    box-shadow: 0 0 20px rgba(255, 77, 77, 0.4);
+}
+
+/* --- RESPONSIVIDADE --- */
+@media (max-width: 768px) {
+    .ntitle h1 { font-size: 1.2rem; }
+    td:first-child { min-width: 200px; }
+    th, td { padding: 10px 5px; font-size: 0.75rem; }
+}
