@@ -27,7 +27,7 @@ body {
     min-height: 100vh;
     color: white;
     background: linear-gradient(-45deg, var(--bg-dark), var(--bg-medium), var(--bg-light), #0a1414);
-    background-size: 200% 200%;
+    background-size: 400% 400%;
     font-family: 'Unispace', sans-serif; 
     animation: gradientAnim 12s ease infinite; 
     overflow-x: hidden;
@@ -80,8 +80,11 @@ table {
     max-width: 1150px;
     margin: 20px auto;
     border-collapse: collapse;
-    /*backdrop-filter: blur(20px);*/
-    background: rgba(0, 0, 0, 0.3); 
+    backdrop-filter: blur(20px);
+    background: linear-gradient(
+        rgba(0, 0, 0, 0.2),
+        rgba(0, 0, 0, 0.4)
+    );
     box-shadow: 0px 30px 60px rgba(0, 0, 0, 0.7);
     border: 1px solid rgba(255, 255, 255, 0.05);
     border-radius: 12px;
