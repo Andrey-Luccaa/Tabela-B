@@ -2,7 +2,7 @@ const listaOriginal = [
     { nome: "AMÉRICA-MG", id: "america", logo: "america-mg.png", v: 0, e: 0, d: 0, gp: 0, gc: 0 },
     { nome: "ATHLETIC", id: "athletic", logo: "athletic.png", v: 0, e: 0, d: 0, gp: 0, gc: 0 },
     { nome: "ATLÉTICO-GO", id: "atletico", logo: "atletico goianiense.png", v: 0, e: 0, d: 0, gp: 0, gc: 0 },
-    { nome: "AVAÍ", id: "avai", logo: "avai.png", v: 0, e: 0, d: 0, gp: 0, gc: 0 },
+    { nome: "AVAÍ", id: "avai", logo: "Avai.png", v: 0, e: 0, d: 0, gp: 0, gc: 0 },
     { nome: "BOTAFOGO-SP", id: "botafogo", logo: "botafogo-sp.png", v: 0, e: 0, d: 0, gp: 0, gc: 0 },
     { nome: "CEARÁ", id: "ceara", logo: "ceara.png", v: 0, e: 0, d: 0, gp: 0, gc: 0 },
     { nome: "CRB", id: "crb", logo: "crb.png", v: 0, e: 0, d: 0, gp: 0, gc: 0 },
