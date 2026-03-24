@@ -39,8 +39,7 @@ function normalizarTexto(texto) {
 
 async function carregarDadosDaPlanilha() {
     try {
-        const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF3MDN_XZnTxezQK8llm9RLzwVD5Z_UCqTEMHhmIc4j6CGbqiMKUZoMKjpswygYjGdKwbU14j3QOG2/pub?output=csv";
-        output=csv&gid=2083338507";
+        const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF3MDN_XZnTxezQK8llm9RLzwVD5Z_UCqTEMHhmIc4j6CGbqiMKUZoMKjpswygYjGdKwbU14j3QOG2/pub?output=csv&gid=2083338507";
         const res = await fetch(url);
         const texto = (await res.text()).replace(/^\uFEFF/, '');
 
