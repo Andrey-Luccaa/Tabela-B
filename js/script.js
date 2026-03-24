@@ -31,6 +31,7 @@ const coresTimes = {
 };
 
 let dadosTimes = [...listaOriginal];
+let posicoesAnteriores = {};
 
 function normalizarTexto(texto) {
     return texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase().trim();
@@ -38,62 +39,56 @@ function normalizarTexto(texto) {
 
 async function carregarDadosDaPlanilha() {
     try {
-        const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF3MDN_XZnTxezQK8llm9RLzwVD5Z_UCqTEMHhmIc4j6CGbqiMKUZoMKjpswygYjGdKwbU14j3QOG2/pub?output=csv";
+                const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF3MDN_XZnTxezQK8llm9RLzwVD5Z_UCqTEMHhmIc4j6CGbqiMKUZoMKjpswygYjGdKwbU14j3QOG2/pub?output=csv";
+output=csv&gid=2083338507";
+        const res = await fetch(url);
+        const texto = (await res.text()).replace(/^\uFEFF/, '');
 
-        const resposta = await fetch(sheetURL);
-        if (!resposta.ok) throw new Error("Erro ao acessar Google Sheets.");
+        const linhas = texto.split(/\r?\n/).slice(1);
+        const mapa = {};
 
-        const texto = (await resposta.text()).replace(/^\uFEFF/, '');
-        const linhas = texto.split(/\r?\n/).filter(l => l.trim().length > 0);
-        const corpo = linhas.slice(1);
+        linhas.forEach(l => {
+            const sep = l.includes(";") ? ";" : ",";
+            const col = l.split(sep);
 
-        const mapaPlanilha = {};
+            const nome = normalizarTexto((col[1] || "").replace(/"/g, ""));
 
-        corpo.forEach(linha => {
-            const separador = linha.includes(';') ? ';' : ',';
-            const col = linha.split(separador);
-
-            // ✅ CORRIGIDO AQUI
-            if (col.length >= 6) {
-                const nomeCSV = normalizarTexto(col[0].replace(/"/g, ''));
-
-                mapaPlanilha[nomeCSV] = {
-                    v: parseInt(col[1]) || 0,
-                    e: parseInt(col[2]) || 0,
-                    d: parseInt(col[3]) || 0,
-                    gp: parseInt(col[4]) || 0,
-                    gc: parseInt(col[5]) || 0
-                };
-            }
+            mapa[nome] = {
+                v: parseInt(col[2]) || 0,
+                e: parseInt(col[3]) || 0,
+                d: parseInt(col[4]) || 0,
+                gp: parseInt(col[5]) || 0,
+                gc: parseInt(col[6]) || 0
+            };
         });
 
-        dadosTimes = listaOriginal.map(time => {
-            const nomeChave = normalizarTexto(time.nome);
-            const novosValores = mapaPlanilha[nomeChave];
-            return novosValores ? { ...time, ...novosValores } : time;
+        dadosTimes = listaOriginal.map(t => {
+            const chave = normalizarTexto(t.nome);
+            return mapa[chave] ? { ...t, ...mapa[chave] } : t;
         });
 
         renderizarTabela();
 
-    } catch (erro) {
-        console.error("Erro:", erro.message);
+    } catch (e) {
+        console.error("Erro:", e);
         renderizarTabela();
     }
 }
 
 function renderizarTabela() {
-    const tbody = document.querySelector('tbody');
+    const tbody = document.querySelector("tbody");
     if (!tbody) return;
 
-    const posicoesAntigas = {};
-    tbody.querySelectorAll('tr').forEach(tr => {
-        const id = tr.dataset.id;
-        if (id) posicoesAntigas[id] = tr.getBoundingClientRect().top;
+    const posicoesAntigasDOM = {};
+    tbody.querySelectorAll("tr").forEach(tr => {
+        posicoesAntigasDOM[tr.dataset.id] = tr.getBoundingClientRect().top;
     });
 
-    const timesProcessados = dadosTimes.map(t => ({
+    const primeiraRenderizacao = Object.keys(posicoesAnteriores).length === 0;
+
+    const times = dadosTimes.map(t => ({
         ...t,
-        pontos: (t.v * 3) + t.e,
+        pontos: t.v * 3 + t.e,
         jogos: t.v + t.e + t.d,
         sg: t.gp - t.gc,
         aproveitamento: (t.v + t.e + t.d) > 0
@@ -103,18 +98,37 @@ function renderizarTabela() {
         if (b.pontos !== a.pontos) return b.pontos - a.pontos;
         if (b.v !== a.v) return b.v - a.v;
         if (b.sg !== a.sg) return b.sg - a.sg;
-        if (b.gp !== a.gp) return b.gp - a.gp;
         return a.nome.localeCompare(b.nome);
     });
 
-    tbody.innerHTML = '';
+    tbody.innerHTML = "";
 
-    timesProcessados.forEach((time, index) => {
-        const tr = document.createElement('tr');
+    times.forEach((time, index) => {
+        const tr = document.createElement("tr");
         tr.dataset.id = time.id;
 
-        const corHex = coresTimes[time.id] || "#ffffff";
-        tr.style.setProperty('--time-color', corHex);
+        tr.style.setProperty("--time-color", coresTimes[time.id] || "#fff");
+
+        const posAntiga = posicoesAnteriores[time.id];
+        let seta = "•";
+        let classeSeta = "same";
+
+        if (!primeiraRenderizacao && posAntiga !== undefined) {
+            if (index < posAntiga) {
+                seta = "↑";
+                classeSeta = "up";
+            } else if (index > posAntiga) {
+                seta = "↓";
+                classeSeta = "down";
+            }
+        }
+
+        posicoesAnteriores[time.id] = index;
+
+        if (index < 4) tr.classList.add("top4", "libertadores");
+        else if (index === 4) tr.classList.add("pre-liberta");
+        else if (index >= 5 && index <= 10) tr.classList.add("sulamericana");
+        else if (index >= 16) tr.classList.add("rebaixamento");
 
         tr.innerHTML = `
             <td>
@@ -122,6 +136,7 @@ function renderizarTabela() {
                     <span class="pos-num">${index + 1}º</span>
                     <img src="image/${time.logo}" class="timelogo">
                     <span>${time.nome}</span>
+                    <span class="pos-change ${classeSeta}">${seta}</span>
                 </div>
             </td>
             <td><strong>${time.pontos}</strong></td>
@@ -132,33 +147,56 @@ function renderizarTabela() {
             <td>${time.gp}</td>
             <td>${time.gc}</td>
             <td>${time.sg}</td>
-            <td>${time.aproveitamento}%</td>
+            <td>
+                <div class="aproveitamento-bar">
+                    <div class="fill" style="width:${time.aproveitamento}%"></div>
+                    <span>${time.aproveitamento}%</span>
+                </div>
+            </td>
         `;
 
-        if (index < 4) tr.style.borderLeft = "4px solid #00ff88";
-        else if (index >= 16) tr.style.borderLeft = "4px solid #ff4d4d";
+        tr.addEventListener("click", () => {
+            if (clickSound) {
+                clickSound.currentTime = 0;
+                clickSound.play().catch(() => {});
+            }
+
+            tr.classList.add("clicked");
+            setTimeout(() => tr.classList.remove("clicked"), 400);
+        });
 
         tbody.appendChild(tr);
     });
 
     requestAnimationFrame(() => {
-        tbody.querySelectorAll('tr').forEach(tr => {
-            const id = tr.dataset.id;
-            const antiga = posicoesAntigas[id];
+        tbody.querySelectorAll("tr").forEach(tr => {
+            const antiga = posicoesAntigasDOM[tr.dataset.id];
             const nova = tr.getBoundingClientRect().top;
 
             if (antiga !== undefined && antiga !== nova) {
                 const delta = antiga - nova;
-                tr.style.transition = 'none';
+
+                tr.style.transition = "none";
                 tr.style.transform = `translateY(${delta}px)`;
 
                 requestAnimationFrame(() => {
-                    tr.style.transition = 'transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)';
-                    tr.style.transform = 'translateY(0)';
+                    tr.style.transition = window.innerWidth <= 768
+                        ? "transform 0.3s ease-out"
+                        : "transform 0.5s cubic-bezier(0.22, 1, 0.36, 1)";
+                    tr.style.transform = "translateY(0)";
                 });
             }
         });
     });
 }
 
-window.onload = carregarDadosDaPlanilha;
+document.body.addEventListener("touchstart", () => {
+    if (clickSound) {
+        clickSound.play().then(() => {
+            clickSound.pause();
+            clickSound.currentTime = 0;
+        }).catch(() => {});
+    }
+}, { once: true });
+
+carregarDadosDaPlanilha();
