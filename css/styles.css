@@ -26,9 +26,8 @@
 body {
     min-height: 100vh;
     color: white;
-    /* Gradiente Animado Série B: Verde Petróleo Profundo */
     background: linear-gradient(-45deg, var(--bg-dark), var(--bg-medium), var(--bg-light), #0a1414);
-    background-size: 400% 400%;
+    background-size: 200% 200%;
     font-family: 'Unispace', sans-serif; 
     animation: gradientAnim 12s ease infinite; 
     overflow-x: hidden;
