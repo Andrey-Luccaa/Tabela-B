@@ -1,15 +1,7 @@
-/* --- FONTE CUSTOMIZADA --- */
-@font-face {
-    font-family: 'Unispace';
-    src: url('../font/Unispace Rg.otf') format('opentype'); 
-    font-weight: normal;
-    font-style: normal;
-}
-
-/* --- RESET E CONFIGURAÇÕES GERAIS --- */
+/* RESET */
 * {
-    padding: 0;
     margin: 0;
+    padding: 0;
     box-sizing: border-box;
 }
 
@@ -23,195 +15,261 @@
     --text-muted: rgba(187, 241, 187, 0.7);
 }
 
+/* BODY */
 body {
     min-height: 100vh;
     color: white;
+    font-family: 'Unispace', sans-serif;
+
     background: linear-gradient(-45deg, var(--bg-dark), var(--bg-medium), var(--bg-light), #0a1414);
     background-size: 400% 400%;
-    font-family: 'Unispace', sans-serif; 
-    animation: gradientAnim 12s ease infinite; 
+    animation: gradientSmooth 15s ease-in-out infinite;
+
     overflow-x: hidden;
 }
 
-@keyframes gradientAnim {
+/* ANIMAÇÃO FUNDO */
+@keyframes gradientSmooth {
     0% { background-position: 0% 50%; }
+    25% { background-position: 50% 100%; }
     50% { background-position: 100% 50%; }
+    75% { background-position: 50% 0%; }
     100% { background-position: 0% 50%; }
 }
 
-/* --- TÍTULO E LOGO --- */
+/* HEADER */
 .ctitle {
     display: flex;
-    flex-direction: column;
-    justify-content: center;
     align-items: center;
-    padding: 40px 0;
+    justify-content: center;
+    gap: 15px;
+    flex-direction: column;
+    margin: 20px;
     text-align: center;
 }
 
-.ititle img {
-    width: 140px;
-    transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    cursor: pointer;
-    filter: drop-shadow(0 0 15px rgba(0, 217, 255, 0.3));
+#logo-brasileirao {
+    width: 120px;
+    transition: 1.5s linear;
 }
 
-.ititle img:hover { 
-    transform: scale(1.1) rotate(2deg); 
-    filter: drop-shadow(0 0 25px var(--accent-cyan));
+#logo-brasileirao:hover{
+    transform:scale(1.2);
 }
 
-.ntitle h1 {
-    font-size: 1.8rem;
-    letter-spacing: 3px;
-    margin-top: 10px;
-    text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+#logo-brasileirao:active {
+    transform: scale(0.9);
+    transform: rotate(45deg);
 }
 
-/* --- CONTAINER E TABELA --- */
+/* CONTAINER */
 .table-container {
-    width: 100%;
-    overflow-x: auto;
-    padding: 0 20px 80px 20px;
-}
-
-table {
-    width: 100%;
-    max-width: 1150px;
-    margin: 20px auto;
-    border-collapse: collapse;
-    backdrop-filter: blur(20px);
-    background: linear-gradient(
-        rgba(0, 0, 0, 0.2),
-        rgba(0, 0, 0, 0.4)
-    );
-    box-shadow: 0px 30px 60px rgba(0, 0, 0, 0.7);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    border-radius: 12px;
+    max-width: 1000px;
+    margin: auto;
+    background: rgba(30, 41, 59, 0.85);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
     overflow: hidden;
 }
 
-/* --- CABEÇALHO --- */
-#titulos th {
-    background: rgba(0, 0, 0, 0.9);
-    padding: 18px 12px;
-    font-size: 0.8rem;
-    color: var(--accent-cyan);
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    border-bottom: 2px solid rgba(0, 217, 255, 0.2);
+/* TABLE */
+table {
+    width: 100%;
+    border-collapse: collapse;
 }
 
-#class { text-align: left; padding-left: 25px; }
-
-/* --- CÉLULAS E LINHAS --- */
-tr {
-    transition: all 0.3s ease;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
-    cursor: pointer;
+/* HEADER */
+thead {
+    background: #020617;
 }
 
+th {
+    padding: 12px;
+    font-size: 14px;
+    color: #94a3b8;
+}
+
+/* CELULAS */
 td {
-    padding: 15px 10px;
-    text-align: center;
-    font-size: 0.9rem;
-    color: var(--text-muted);
+    padding: 10px;
+    font-size: 14px;
+    overflow: visible; /* IMPORTANTE */
 }
 
-/* Coluna do Nome do Time */
-td:first-child {
-    text-align: left;
-    min-width: 280px;
-    background: rgba(0, 0, 0, 0.15);
-}
-
+/* TEAM INFO */
 .team-info {
     display: flex;
     align-items: center;
-    gap: 15px;
-    padding-left: 10px;
+    gap: 10px;
+    min-width: 0;
+    overflow: visible; /* IMPORTANTE */
 }
 
 .pos-num {
-    min-width: 35px;
+    width: 30px;
     font-weight: bold;
-    opacity: 0.5;
-    font-size: 0.8rem;
+    color: #94a3b8;
 }
 
+.team-info span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* LOGO (RESPONSIVA E CORRIGIDA) */
 .timelogo {
-    width: 26px;
-    height: 26px;
+    width: clamp(28px, 5vw, 42px);
+    height: clamp(28px, 5vw, 42px);
     object-fit: contain;
-    filter: drop-shadow(0 0 4px rgba(0,0,0,0.5));
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    object-position: center;
+    padding: 4px;
+    display: block;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* --- DESTAQUES DE COLUNA --- */
-/* Coluna de Pontos (P) */
-td:nth-child(2) {
-    font-weight: bold;
-    color: var(--g4-color);
-    font-size: 1.1rem;
-    text-shadow: 0 0 10px rgba(0, 255, 136, 0.2);
+/* CLICK NO LOGO (EFEITO FORTE) */
+tr.clicked .timelogo {
+    transform: scale(1.4);
+    box-shadow: 
+        inset 0 0 14px var(--time-color),
+        inset 0 0 25px var(--time-color),
+        0 0 12px var(--highlight-color);
 }
 
-/* --- EFEITOS DE HOVER (INTERATIVIDADE) --- */
-tr:hover {
-    background: rgba(255, 255, 255, 0.06);
-}
-
-tr:hover .pos-num {
-    opacity: 1;
-    color: var(--time-color);
-}
-
-tr:hover .timelogo {
-    transform: scale(1.4) translateX(5px);
-    filter: drop-shadow(0 0 10px var(--time-color));
-}
-
-tr:hover .team-info span:last-child {
-    transform: translateX(10px);
-    color: #fff;
-    text-shadow: 0 0 12px var(--time-color);
-}
-
-/* --- ZONAS DE CLASSIFICAÇÃO (Bordas) --- */
-/* Estilo aplicado via JS baseado no Index */
-.g4-border { 
-    border-left: 5px solid var(--g4-color) !important; 
-    box-shadow: inset 10px 0 20px -10px rgba(0, 255, 136, 0.2);
-}
-
-.z4-border { 
-    border-left: 5px solid var(--z4-color) !important; 
-    box-shadow: inset 10px 0 20px -10px rgba(255, 77, 77, 0.2);
-}
-
-/* --- BOTÕES --- */
-.btn-reset {
-    background: transparent;
-    color: var(--z4-color);
-    border: 1px solid var(--z4-color);
-    padding: 12px 25px;
-    border-radius: 4px;
-    font-family: 'Unispace', sans-serif;
+/* LINHA */
+tr {
+    position: relative;
     cursor: pointer;
-    text-transform: uppercase;
-    transition: all 0.3s ease;
-    letter-spacing: 1px;
+    transition: transform 0.2s ease, background 0.2s ease;
+    will-change: transform;
 }
 
-.btn-reset:hover {
-    background: var(--z4-color);
-    color: white;
-    box-shadow: 0 0 20px rgba(255, 77, 77, 0.4);
+tr:hover {
+    background: rgba(255, 255, 255, 0.05);
 }
 
-/* --- RESPONSIVIDADE --- */
+tr:active {
+    transform: scale(0.98);
+}
+
+/* CLICK EFFECT */
+tr.clicked {
+    animation: clickGlow 0.3s ease;
+}
+
+@keyframes clickGlow {
+    0% { box-shadow: 0 0 0px var(--time-color); }
+    50% { box-shadow: 0 0 18px var(--time-color); }
+    100% { box-shadow: 0 0 0px var(--time-color); }
+}
+
+/* TOP 4 GLOW */
+tr.top4::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle, var(--time-color), transparent 70%);
+    opacity: 0.15;
+    filter: blur(12px);
+    pointer-events: none;
+    animation: glowPulse 3s ease-in-out infinite;
+}
+
+@keyframes glowPulse {
+    0%, 100% { opacity: 0.1; }
+    50% { opacity: 0.25; }
+}
+
+/* CORES COMPETIÇÃO */
+.libertadores {
+    border-left: 4px solid #22c55e;
+}
+
+.pre-liberta {
+    border-left: 4px solid #eab308;
+}
+
+.sulamericana {
+    border-left: 4px solid #3b82f6;
+}
+
+.rebaixamento {
+    border-left: 4px solid #ef4444;
+}
+
+/* SETAS */
+.pos-change {
+    font-size: 12px;
+    margin-left: 5px;
+    font-weight: bold;
+}
+
+.up {
+    color: #22c55e;
+}
+
+.down {
+    color: #ef4444;
+}
+
+.same {
+    color: #94a3b8;
+}
+
+/* APROVEITAMENTO */
+.aproveitamento-bar {
+    position: relative;
+    background: #020617;
+    border-radius: 6px;
+    height: 16px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+}
+
+.aproveitamento-bar span {
+    position: relative;
+    z-index: 2;
+    font-weight: bold;
+}
+
+.aproveitamento-bar .fill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    background: linear-gradient(90deg, #22c55e, #3b82f6);
+    transition: width 0.5s ease;
+    z-index: 1;
+}
+
+/* MOBILE */
 @media (max-width: 768px) {
-    .ntitle h1 { font-size: 1.2rem; }
-    td:first-child { min-width: 200px; }
-    th, td { padding: 10px 5px; font-size: 0.75rem; }
+
+    body {
+        animation: none;
+        background-size: 100% 100%;
+    }
+
+    .ctitle {
+        flex-direction: column;
+    }
+
+    th, td {
+        font-size: 12px;
+        padding: 8px;
+    }
+
+    .timelogo {
+        width: clamp(34px, 8vw, 50px);
+        height: clamp(34px, 8vw, 50px);
+    }
+
+    .aproveitamento-bar {
+        height: 12px;
+        font-size: 10px;
+    }
 }
