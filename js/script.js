@@ -53,11 +53,11 @@ async function carregarDadosDaPlanilha() {
             const nome = normalizarTexto((col[1] || "").replace(/"/g, ""));
 
             mapa[nome] = {
-                v: parseInt(col[1]) || 0,
-                e: parseInt(col[2]) || 0,
-                d: parseInt(col[3]) || 0,
-                gp: parseInt(col[4]) || 0,
-                gc: parseInt(col[5]) || 0
+                v: parseInt(col[2]) || 0,
+                e: parseInt(col[3]) || 0,
+                d: parseInt(col[4]) || 0,
+                gp: parseInt(col[5]) || 0,
+                gc: parseInt(col[6]) || 0
             };
         });
 
