@@ -50,7 +50,7 @@ async function carregarDadosDaPlanilha() {
             const sep = l.includes(";") ? ";" : ",";
             const col = l.split(sep);
 
-            const nome = normalizarTexto((col[1] || "").replace(/"/g, ""));
+            const nome = normalizarTexto((col[0] || "").replace(/"/g, ""));
 
             mapa[nome] = {
                 v: parseInt(col[1]) || 0,
