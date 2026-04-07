@@ -21,7 +21,7 @@ body {
     color: white;
     font-family: 'Unispace', sans-serif;
 
-    background: linear-gradient(-45deg, var(--bg-dark), var(--bg-medium), var(--bg-light), #0a1414);
+    background: linear-gradient(-45deg, var(--bg-dark), var(--bg-medium), var(--bg-light), #0a1414);;
     background-size: 400% 400%;
     animation: gradientSmooth 15s ease-in-out infinite;
 
@@ -53,23 +53,140 @@ body {
     transition: 1.5s linear;
 }
 
-#logo-brasileirao:hover{
-    transform:scale(1.2);
+#logo-brasileirao:hover {
+    transform: scale(1.2);
 }
 
 #logo-brasileirao:active {
-    transform: scale(0.9);
-    transform: rotate(45deg);
+    transform: scale(0.9) rotate(45deg);
 }
 
-/* CONTAINER */
+/* CONTAINER PRINCIPAL (NOVO) */
+.main-container {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 0 20px;
+}
+
+/* TABELA */
 .table-container {
+    flex: 3;
     max-width: 1000px;
-    margin: auto;
-    background: rgba(30, 41, 59, 0.85);
+    margin: 0;
+    background: var(--bg-medium);
     backdrop-filter: blur(10px);
     border-radius: 15px;
     overflow: hidden;
+}
+
+/* LATERAL (RODADA) */
+
+.rodada-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.rodada-header button {
+    background: #020617;
+    border: none;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.rodada-header button:hover {
+    background: #3b82f6;
+}
+
+.rodada-header button i {
+    font-size: 18px;
+}
+
+.jogo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.jogo:hover {
+    transform: scale(1.04);
+    box-shadow: 0 0 12px #3b82f6;
+}
+
+.time {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    width: 120px; /* 🔥 largura fixa */
+}
+
+.time.casa {
+    justify-content: flex-start;
+}
+
+.time.fora {
+    justify-content: flex-end;
+    text-align: right;
+}
+
+.time span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 80px;
+}
+
+.placar {
+    font-size: 16px;
+    font-weight: bold;
+    padding: 4px 10px;
+    border-radius: 6px;
+    background: #111827;
+}
+
+/* JOGOS */
+.jogo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    background: #020617;
+    padding: 10px;
+    margin-bottom: 10px;
+
+    border-radius: 10px;
+    transition: 0.25s;
+    cursor: pointer;
+}
+
+.jogo:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 10px #3b82f6;
+}
+
+.time {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+}
+
+.time img {
+    width: 22px;
+    height: 22px;
+    object-fit: contain;
+}
+
+.vs {
+    font-size: 12px;
+    color: #94a3b8;
 }
 
 /* TABLE */
@@ -80,20 +197,20 @@ table {
 
 /* HEADER */
 thead {
-    background: #020617;
+    background: var(--bg-light);
 }
 
 th {
     padding: 12px;
     font-size: 14px;
-    color: #94a3b8;
+    color: var(--g4-color);
 }
 
 /* CELULAS */
 td {
     padding: 10px;
     font-size: 14px;
-    overflow: visible; /* IMPORTANTE */
+    overflow: visible;
 }
 
 /* TEAM INFO */
@@ -102,13 +219,13 @@ td {
     align-items: center;
     gap: 10px;
     min-width: 0;
-    overflow: visible; /* IMPORTANTE */
+    overflow: visible;
 }
 
 .pos-num {
     width: 30px;
     font-weight: bold;
-    color: #94a3b8;
+    color: var(--g4-color);
 }
 
 .team-info span {
@@ -117,7 +234,7 @@ td {
     text-overflow: ellipsis;
 }
 
-/* LOGO (RESPONSIVA E CORRIGIDA) */
+/* LOGO */
 .timelogo {
     width: clamp(28px, 5vw, 42px);
     height: clamp(28px, 5vw, 42px);
@@ -128,7 +245,53 @@ td {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* CLICK NO LOGO (EFEITO FORTE) */
+.jogo .time img {
+    width: 34px;
+    height: 34px;
+    object-fit: contain;
+}
+
+.placar-input {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: #020617;
+    padding: 6px 10px;
+    border-radius: 8px;
+}
+
+.input-gol {
+    width: 40px;
+    height: 28px;
+    text-align: center;
+    border: none;
+    border-radius: 6px;
+    background: #111827;
+    color: #fff;
+    font-weight: bold;
+    font-size: 14px;
+    outline: none;
+}
+
+.input-gol:disabled{
+    background-color: #374151;
+    color: #9ca3af;
+    cursor: not-allowed;
+}
+
+.input-gol:focus {
+    background: #1f2937;
+    box-shadow: 0 0 6px #3b82f6;
+}
+
+/* remove setinhas do input number */
+.input-gol::-webkit-inner-spin-button,
+.input-gol::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* CLICK LOGO */
 tr.clicked .timelogo {
     transform: scale(1.4);
     box-shadow: 
@@ -247,15 +410,46 @@ tr.top4::after {
 }
 
 /* MOBILE */
-@media (max-width: 768px) {
+@media (max-width: 900px) {
 
     body {
         animation: none;
         background-size: 100% 100%;
     }
 
-    .ctitle {
+    .main-container {
         flex-direction: column;
+        align-items: center;
+    }
+
+    team-info {
+        gap: 6px;
+    }
+
+    .pos-num {
+        width: 22px;
+        font-size: 11px;
+    }
+
+    .team-info span:nth-child(3) {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 90px;
+    }
+
+    .timelogo {
+        width: 32px;
+        height: 32px;
+    }
+
+    td:first-child {
+        max-width: 160px;
+    }
+    
+    .rodada {
+        width: 100%;
+        max-width: 1000px;
     }
 
     th, td {
@@ -272,4 +466,26 @@ tr.top4::after {
         height: 12px;
         font-size: 10px;
     }
+    /*th:nth-child(10),
+    td:nth-child(10){
+        display: none; /* esconde colunas menos importantes */
+    }
+    /* NÃO deixa a posição cortar */
+.pos-num {
+    flex-shrink: 0;
+    width: auto;
+    overflow: visible;
+}
+
+/* NÃO corta a seta */
+.pos-change {
+    flex-shrink: 0;
+}
+
+/* APLICA ellipsis SÓ no nome do time */
+.team-info span:nth-child(3) {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 90px;
 }
