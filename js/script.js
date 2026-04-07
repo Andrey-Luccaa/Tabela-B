@@ -2,7 +2,7 @@ const listaOriginal = [
     { nome: "AMÉRICA-MG", id: "america", logo: "america-mg.png", v: 0, e: 0, d: 0, gp: 0, gc: 0 },
     { nome: "ATHLETIC", id: "athletic", logo: "athletic.png", v: 0, e: 0, d: 0, gp: 0, gc: 0 },
     { nome: "ATLÉTICO-GO", id: "atletico", logo: "atletico goianiense.png", v: 0, e: 0, d: 0, gp: 0, gc: 0 },
-    { nome: "AVAÍ", id: "avai", logo: "Avai.png", v: 0, e: 0, d: 0, gp: 0, gc: 0 },
+    { nome: "AVAÍ", id: "avai", logo: "avai.png", v: 0, e: 0, d: 0, gp: 0, gc: 0 },
     { nome: "BOTAFOGO-SP", id: "botafogo", logo: "botafogo-sp.png", v: 0, e: 0, d: 0, gp: 0, gc: 0 },
     { nome: "CEARÁ", id: "ceara", logo: "ceara.png", v: 0, e: 0, d: 0, gp: 0, gc: 0 },
     { nome: "CRB", id: "crb", logo: "crb.png", v: 0, e: 0, d: 0, gp: 0, gc: 0 },
@@ -33,14 +33,24 @@ const coresTimes = {
 let dadosTimes = [...listaOriginal];
 let posicoesAnteriores = {};
 
+// ================= JOGOS =================
+let todosJogos = [];
+let rodadaAtual = 1;
+
+// ================= UTILS =================
 function normalizarTexto(texto) {
     return texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase().trim();
 }
 
+function pegarTimePorNome(nome){
+    return listaOriginal.find(t => normalizarTexto(t.nome) === nome);
+}
+
+// ================= TABELA =================
 async function carregarDadosDaPlanilha() {
     try {
-        const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF3MDN_XZnTxezQK8llm9RLzwVD5Z_UCqTEMHhmIc4j6CGbqiMKUZoMKjpswygYjGdKwbU14j3QOG2/pub?output=csv";
-        const res = await fetch(sheetURL);  // <- Corrigido aqui
+        const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF3MDN_XZnTxezQK8llm9RLzwVD5Z_UCqTEMHhmIc4j6CGbqiMKUZoMKjpswygYjGdKwbU14j3QOG2/pub?gid=0";
+        const res = await fetch(url);
         const texto = (await res.text()).replace(/^\uFEFF/, '');
 
         const linhas = texto.split(/\r?\n/).slice(1);
@@ -50,14 +60,14 @@ async function carregarDadosDaPlanilha() {
             const sep = l.includes(";") ? ";" : ",";
             const col = l.split(sep);
 
-            const nome = normalizarTexto((col[0] || "").replace(/"/g, ""));
+            const nome = normalizarTexto((col[1] || "").replace(/"/g, ""));
 
             mapa[nome] = {
-                v: parseInt(col[1]) || 0,
-                e: parseInt(col[2]) || 0,
-                d: parseInt(col[3]) || 0,
-                gp: parseInt(col[4]) || 0,
-                gc: parseInt(col[5]) || 0
+                v: parseInt(col[2]) || 0,
+                e: parseInt(col[3]) || 0,
+                d: parseInt(col[4]) || 0,
+                gp: parseInt(col[5]) || 0,
+                gc: parseInt(col[6]) || 0
             };
         });
 
@@ -72,6 +82,62 @@ async function carregarDadosDaPlanilha() {
         console.error("Erro:", e);
         renderizarTabela();
     }
+}
+
+// ================= JOGOS =================
+async function carregarJogosDaPlanilha(){
+    try{
+        const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF3MDN_XZnTxezQK8llm9RLzwVD5Z_UCqTEMHhmIc4j6CGbqiMKUZoMKjpswygYjGdKwbU14j3QOG2/pub?gid=461482428&single=true&output=csv";
+
+        const res = await fetch(url);
+        const texto = (await res.text()).replace(/^\uFEFF/, '');
+
+        const linhas = texto.split(/\r?\n/).slice(1);
+
+        todosJogos = [];
+
+        linhas.forEach(l=>{
+            const sep = l.includes(";") ? ";" : ",";
+            const col = l.split(sep);
+
+            if (!col[0] || col[0] === "---") return;
+
+            const golsCasa = col[3] && col[3].trim() !== "" ? parseInt(col[3]) : null;
+            const golsFora = col[4] && col[4].trim() !== "" ? parseInt(col[4]) : null;
+
+            todosJogos.push({
+                rodada: parseInt(col[0]),
+                casa: normalizarTexto(col[1]),
+                fora: normalizarTexto(col[2]),
+                golsCasa,
+                golsFora,
+                bloqueado: golsCasa !== null && golsFora !== null // 🔒 ESSENCIAL
+            });
+        });
+        
+        renderizarRodada();
+        atualizarTabelaComJogos();
+
+    }catch(e){
+        console.error("Erro jogos:", e);
+    }
+
+}
+
+// ================= RODADAS =================
+function trocarRodada(dir){
+    rodadaAtual += dir;
+    if (rodadaAtual < 1) rodadaAtual = 1;
+    if (rodadaAtual > 38) rodadaAtual = 38;
+    renderizarRodada();
+}
+
+function renderizarRodada(){
+    const titulo = document.getElementById("tituloRodada");
+    if (titulo) titulo.innerText = `Rodada ${rodadaAtual}`;
+
+    const jogos = todosJogos.filter(j => j.rodada === rodadaAtual);
+    renderizarJogos(jogos);
 }
 
 function renderizarTabela() {
@@ -125,6 +191,8 @@ function renderizarTabela() {
         posicoesAnteriores[time.id] = index;
 
         if (index < 4) tr.classList.add("top4", "libertadores");
+        else if (index === 4) tr.classList.add("pre-liberta");
+        else if (index >= 5 && index <= 10) tr.classList.add("sulamericana");
         else if (index >= 16) tr.classList.add("rebaixamento");
 
         tr.innerHTML = `
@@ -187,6 +255,121 @@ function renderizarTabela() {
     });
 }
 
+// ================= RENDER JOGOS =================
+function renderizarJogos(jogos){
+    const container = document.getElementById("listaJogos");
+    if (!container) return;
+
+    container.innerHTML = "";
+
+    jogos.forEach(j=>{
+        const casa = pegarTimePorNome(j.casa);
+        const fora = pegarTimePorNome(j.fora);
+        if (!casa || !fora) return;
+
+        const div = document.createElement("div");
+        div.classList.add("jogo");
+
+        // se estiver bloqueado adiciona classe visual
+        if (j.bloqueado) {
+            div.classList.add("jogo-bloqueado");
+        }
+
+        div.innerHTML = `
+            <div class="time casa">
+                <img src="image/${casa.logo}">
+                <span>${casa.nome}</span>
+            </div>
+
+            <div class="placar-input">
+                <input 
+                    type="number" 
+                    min="0" 
+                    value="${j.golsCasa ?? ""}" 
+                    class="input-gol casa"
+                    ${j.bloqueado ? "disabled" : ""}
+                >
+
+                <span>x</span>
+
+                <input 
+                    type="number" 
+                    min="0" 
+                    value="${j.golsFora ?? ""}" 
+                    class="input-gol fora"
+                    ${j.bloqueado ? "disabled" : ""}
+                >
+            </div>
+
+            <div class="time fora">
+                <span>${fora.nome}</span>
+                <img src="image/${fora.logo}">
+            </div>
+        `;
+
+        const inputCasa = div.querySelector(".input-gol.casa");
+        const inputFora = div.querySelector(".input-gol.fora");
+
+        function atualizar() {
+            // 🔒 segurança extra
+            if (j.bloqueado) return;
+
+            if (clickSound) {
+                clickSound.currentTime = 0;
+                clickSound.play().catch(()=>{});
+            }
+
+            j.golsCasa = inputCasa.value === "" ? null : parseInt(inputCasa.value);
+            j.golsFora = inputFora.value === "" ? null : parseInt(inputFora.value);
+
+            atualizarTabelaComJogos();
+        }
+
+        inputCasa.addEventListener("input", atualizar);
+        inputFora.addEventListener("input", atualizar);
+
+        container.appendChild(div);
+    });
+}
+
+function atualizarTabelaComJogos() {
+    // resetar stats
+    dadosTimes = listaOriginal.map(t => ({
+        ...t,
+        v: 0, e: 0, d: 0,
+        gp: 0, gc: 0
+    }));
+
+    todosJogos.forEach(j => {
+        if (j.golsCasa == null || j.golsFora == null) return;
+
+        const casa = dadosTimes.find(t => normalizarTexto(t.nome) === j.casa);
+        const fora = dadosTimes.find(t => normalizarTexto(t.nome) === j.fora);
+
+        if (!casa || !fora) return;
+
+        casa.gp += j.golsCasa;
+        casa.gc += j.golsFora;
+
+        fora.gp += j.golsFora;
+        fora.gc += j.golsCasa;
+
+        if (j.golsCasa > j.golsFora) {
+            casa.v++;
+            fora.d++;
+        } else if (j.golsCasa < j.golsFora) {
+            fora.v++;
+            casa.d++;
+        } else {
+            casa.e++;
+            fora.e++;
+        }
+    });
+
+    renderizarTabela();
+}
+
+// ================= INIT =================
 document.body.addEventListener("touchstart", () => {
     if (clickSound) {
         clickSound.play().then(() => {
@@ -197,3 +380,4 @@ document.body.addEventListener("touchstart", () => {
 }, { once: true });
 
 carregarDadosDaPlanilha();
+carregarJogosDaPlanilha();
