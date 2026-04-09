@@ -46,6 +46,22 @@ function pegarTimePorNome(nome){
     return listaOriginal.find(t => normalizarTexto(t.nome) === nome);
 }
 
+function atualizarUltimos(time, resultado) {
+    time.ultimos.push(resultado);
+
+    if (time.ultimos.length > 5) {
+        time.ultimos.shift(); // mantém só os últimos 5
+    }
+}
+
+function formatarUltimos(lista) {
+    return lista.map(r => {
+        if (r === "V") return '<span class="vitoria"><i class="bi bi-check-circle-fill"></i></span>';
+        if (r === "D") return '<span class="derrota"><i class="bi bi-x-circle-fill"></i></span>';
+        return '<span class="empate"><i class="bi bi-ban-fill"></i></span>';
+    }).join("");
+}
+
 // ================= TABELA =================
 async function carregarDadosDaPlanilha() {
     try {
@@ -171,6 +187,8 @@ function renderizarTabela() {
     times.forEach((time, index) => {
         const tr = document.createElement("tr");
         tr.dataset.id = time.id;
+        
+        tr.style.animationDelay = `${index * 0.03}s`;
 
         tr.style.setProperty("--time-color", coresTimes[time.id] || "#fff");
 
@@ -218,17 +236,40 @@ function renderizarTabela() {
                     <span>${time.aproveitamento}%</span>
                 </div>
             </td>
+            <td>
+                <div class="ultimos">
+                    ${formatarUltimos(time.ultimos)}
+                </div>
+            </td>
         `;
 
-        tr.addEventListener("click", () => {
-            if (clickSound) {
-                clickSound.currentTime = 0;
-                clickSound.play().catch(() => {});
-            }
+        tr.addEventListener("click", (e) => {
 
-            tr.classList.add("clicked");
-            setTimeout(() => tr.classList.remove("clicked"), 400);
-        });
+    // SOM
+    if (clickSound) {
+        clickSound.currentTime = 0;
+        clickSound.play().catch(() => {});
+    }
+
+    // ANIMAÇÃO GLOW
+    tr.classList.add("clicked");
+    setTimeout(() => tr.classList.remove("clicked"), 500);
+
+    // RIPPLE
+    const ripple = document.createElement("span");
+    ripple.classList.add("ripple");
+
+    const rect = tr.getBoundingClientRect();
+    const x = e.touches ? e.touches[0].clientX : e.clientX;
+    const y = e.touches ? e.touches[0].clientY : e.clientY;
+
+    ripple.style.left = `${x - rect.left}px`;
+    ripple.style.top = `${y - rect.top}px`;
+
+    tr.appendChild(ripple);
+
+    setTimeout(() => ripple.remove(), 600);
+});
 
         tbody.appendChild(tr);
     });
@@ -337,7 +378,8 @@ function atualizarTabelaComJogos() {
     dadosTimes = listaOriginal.map(t => ({
         ...t,
         v: 0, e: 0, d: 0,
-        gp: 0, gc: 0
+        gp: 0, gc: 0,
+        ultimos: []
     }));
 
     todosJogos.forEach(j => {
@@ -357,12 +399,19 @@ function atualizarTabelaComJogos() {
         if (j.golsCasa > j.golsFora) {
             casa.v++;
             fora.d++;
+            atualizarUltimos(casa, "V");
+            atualizarUltimos(fora, "D");
+
         } else if (j.golsCasa < j.golsFora) {
             fora.v++;
             casa.d++;
+            atualizarUltimos(casa, "D");
+            atualizarUltimos(fora, "V");
         } else {
             casa.e++;
             fora.e++;
+            atualizarUltimos(casa, "E");
+            atualizarUltimos(fora, "E");
         }
     });
 

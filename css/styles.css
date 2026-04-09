@@ -21,7 +21,7 @@ body {
     color: white;
     font-family: 'Unispace', sans-serif;
 
-    background: linear-gradient(-45deg, var(--bg-dark), var(--bg-medium), var(--bg-light), #0a1414);;
+    background: linear-gradient(-45deg, var(--bg-dark), var(--bg-medium), var(--bg-light), #0a1414);
     background-size: 400% 400%;
     animation: gradientSmooth 15s ease-in-out infinite;
 
@@ -55,6 +55,7 @@ body {
 
 #logo-brasileirao:hover {
     transform: scale(1.2);
+    filter: drop-shadow(0 0 5px #fff) 
 }
 
 #logo-brasileirao:active {
@@ -76,9 +77,23 @@ body {
     max-width: 1000px;
     margin: 0;
     background: var(--bg-medium);
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(6px);
     border-radius: 15px;
     overflow: hidden;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    position: relative;
+    box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.603);
+}
+
+.table-container::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 40px;
+    height: 100%;
+    pointer-events: none;
 }
 
 /* LATERAL (RODADA) */
@@ -91,9 +106,9 @@ body {
 }
 
 .rodada-header button {
-    background: #020617;
+    background: var(--bg-dark);
     border: none;
-    color: #fff;
+    color: var(--g4-color);
     padding: 5px 10px;
     border-radius: 6px;
     cursor: pointer;
@@ -101,30 +116,18 @@ body {
 }
 
 .rodada-header button:hover {
-    background: #3b82f6;
+    background: var(--accent-cyan);
 }
 
 .rodada-header button i {
     font-size: 18px;
 }
 
-.jogo {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-}
+
 
 .jogo:hover {
     transform: scale(1.04);
-    box-shadow: 0 0 12px #3b82f6;
-}
-
-.time {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    width: 120px; /* 🔥 largura fixa */
+    box-shadow: 0 0 12px var(--accent-cyan);
 }
 
 .time.casa {
@@ -133,14 +136,6 @@ body {
 
 .time.fora {
     justify-content: flex-end;
-    text-align: right;
-}
-
-.time span {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    max-width: 80px;
 }
 
 .placar {
@@ -148,7 +143,7 @@ body {
     font-weight: bold;
     padding: 4px 10px;
     border-radius: 6px;
-    background: #111827;
+    background: var(--accent-cyan);
 }
 
 /* JOGOS */
@@ -156,19 +151,19 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-
-    background: #020617;
+    background: var(--bg-medium);
     padding: 10px;
     margin-bottom: 10px;
-
     border-radius: 10px;
     transition: 0.25s;
     cursor: pointer;
+    flex: 1;
+    box-shadow: 0px 0px 10px 5px black;
 }
 
 .jogo:hover {
     transform: scale(1.05);
-    box-shadow: 0 0 10px #3b82f6;
+    box-shadow: 0 0 10px var(--g4-color);
 }
 
 .time {
@@ -186,7 +181,7 @@ body {
 
 .vs {
     font-size: 12px;
-    color: #94a3b8;
+    color: var(--g4-color);
 }
 
 /* TABLE */
@@ -197,7 +192,7 @@ table {
 
 /* HEADER */
 thead {
-    background: var(--bg-light);
+    background: var(--bg-dark);
 }
 
 th {
@@ -208,9 +203,15 @@ th {
 
 /* CELULAS */
 td {
+    position: relative;
     padding: 10px;
     font-size: 14px;
-    overflow: visible;
+    text-align: center;
+}
+
+td, .team-info {
+    position: relative;
+    z-index: 1;
 }
 
 /* TEAM INFO */
@@ -220,6 +221,7 @@ td {
     gap: 10px;
     min-width: 0;
     overflow: visible;
+    text-align: left;
 }
 
 .pos-num {
@@ -232,6 +234,7 @@ td {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    max-width: 120px;
 }
 
 /* LOGO */
@@ -251,13 +254,60 @@ td {
     object-fit: contain;
 }
 
+.ultimos {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+}
+
+td.ultimos {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.vitoria {
+    color: #00c853;
+}
+
+.derrota {
+    color: #d50000;
+}
+
+.empate {
+    color: #ffd600;
+}
+
+.vitoria, .derrota, .empate {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.ultimos span {
+    animation: popIn 0.3s ease;
+}
+
+@keyframes popIn {
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
 .placar-input {
     display: flex;
     align-items: center;
     gap: 6px;
-    background: #020617;
+    background: var(--bg-dark);
     padding: 6px 10px;
     border-radius: 8px;
+    margin: 0px 10px 0px 10px;
 }
 
 .input-gol {
@@ -266,22 +316,22 @@ td {
     text-align: center;
     border: none;
     border-radius: 6px;
-    background: #111827;
-    color: #fff;
+    background: var(--bg-dark);
+    color: var(--g4-color);
     font-weight: bold;
     font-size: 14px;
     outline: none;
 }
 
 .input-gol:disabled{
-    background-color: #374151;
-    color: #9ca3af;
+    background-color: var(--bg-dark);
+    color: var(--accent-cyan);
     cursor: not-allowed;
 }
 
 .input-gol:focus {
-    background: #1f2937;
-    box-shadow: 0 0 6px #3b82f6;
+    background: var(--bg-light);
+    box-shadow: 0 0 6px var(--g4-color);
 }
 
 /* remove setinhas do input number */
@@ -291,40 +341,61 @@ td {
     margin: 0;
 }
 
-/* CLICK LOGO */
 tr.clicked .timelogo {
-    transform: scale(1.4);
-    box-shadow: 
-        inset 0 0 14px var(--time-color),
-        inset 0 0 25px var(--time-color),
-        0 0 12px var(--highlight-color);
+    transform: scale(1.5) rotate(8deg);
+    filter: drop-shadow(0 0 5px var(--time-color)) 
+          drop-shadow(0 0 10px var(--time-color)) 
+          drop-shadow(0 0 20px var(--time-color));
+}
+
+@keyframes logoPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.6) rotate(-8deg); }
+    100% { transform: scale(1.5) rotate(8deg); }
 }
 
 /* LINHA */
 tr {
     position: relative;
     cursor: pointer;
-    transition: transform 0.2s ease, background 0.2s ease;
-    will-change: transform;
+    opacity: 1;
+    transform: translateY(5px);
+    animation: fadeInRow 0.4s ease forwards;
+}
+
+@keyframes fadeInRow {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.ripple {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: rgba(255,255,255,0.4);
+    border-radius: 50%;
+    transform: scale(0);
+    pointer-events: none;
+    animation: rippleEffect 0.6s ease-out;
+    z-index: 0;
+}
+
+@keyframes rippleEffect {
+    to {
+        transform: scale(20);
+        opacity: 0;
+    }
 }
 
 tr:hover {
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(59, 130, 246, 0.1);
+    transform: scale(1.01);
 }
 
 tr:active {
-    transform: scale(0.98);
-}
-
-/* CLICK EFFECT */
-tr.clicked {
-    animation: clickGlow 0.3s ease;
-}
-
-@keyframes clickGlow {
-    0% { box-shadow: 0 0 0px var(--time-color); }
-    50% { box-shadow: 0 0 18px var(--time-color); }
-    100% { box-shadow: 0 0 0px var(--time-color); }
+    filter: brightness(0.9);
 }
 
 /* TOP 4 GLOW */
@@ -336,7 +407,6 @@ tr.top4::after {
     opacity: 0.15;
     filter: blur(12px);
     pointer-events: none;
-    animation: glowPulse 3s ease-in-out infinite;
 }
 
 @keyframes glowPulse {
@@ -414,7 +484,7 @@ tr.top4::after {
 
     body {
         animation: none;
-        background-size: 100% 100%;
+        background-size: 300% 300%;
     }
 
     .main-container {
@@ -422,31 +492,6 @@ tr.top4::after {
         align-items: center;
     }
 
-    team-info {
-        gap: 6px;
-    }
-
-    .pos-num {
-        width: 22px;
-        font-size: 11px;
-    }
-
-    .team-info span:nth-child(3) {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 90px;
-    }
-
-    .timelogo {
-        width: 32px;
-        height: 32px;
-    }
-
-    td:first-child {
-        max-width: 160px;
-    }
-    
     .rodada {
         width: 100%;
         max-width: 1000px;
@@ -457,6 +502,10 @@ tr.top4::after {
         padding: 8px;
     }
 
+    tr:hover {
+        transform: none;
+    }
+
     .timelogo {
         width: clamp(34px, 8vw, 50px);
         height: clamp(34px, 8vw, 50px);
@@ -465,27 +514,19 @@ tr.top4::after {
     .aproveitamento-bar {
         height: 12px;
         font-size: 10px;
+    }   
+    tr.clicked .timelogo {
+        transform: scale(1.2);
     }
-    /*th:nth-child(10),
-    td:nth-child(10){
-        display: none; /* esconde colunas menos importantes */
+    .team-info {
+        gap: 6px;
     }
-    /* NÃO deixa a posição cortar */
-.pos-num {
-    flex-shrink: 0;
-    width: auto;
-    overflow: visible;
-}
 
-/* NÃO corta a seta */
-.pos-change {
-    flex-shrink: 0;
-}
-
-/* APLICA ellipsis SÓ no nome do time */
-.team-info span:nth-child(3) {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 90px;
+    .pos-num {
+        width: 22px;
+        font-size: 11px;
+    }
+    .table-container{
+        width: 99%;
+    }
 }
