@@ -62,6 +62,15 @@ function formatarUltimos(lista) {
     }).join("");
 }
 
+function atualizarTabelaComJogos() {
+    // RESETAR STATS (Certifique-se que 'ultimos' comece como um array vazio [])
+    dadosTimes = listaOriginal.map(t => ({
+        ...t,
+        v: 0, e: 0, d: 0,
+        gp: 0, gc: 0,
+        ultimos: [] // <--- ISSO É VITAL
+    }));
+
 // ================= TABELA =================
 async function carregarDadosDaPlanilha() {
     try {
