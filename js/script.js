@@ -47,7 +47,7 @@ function pegarTimePorNome(nome){
 }
 
 function atualizarUltimos(time, resultado) {
-    time.ultimos.push(resultado);
+    time.ultimos.push(resultado);f
 
     if (time.ultimos.length > 5) {
         time.ultimos.shift(); // mantém só os últimos 5
@@ -209,7 +209,7 @@ function renderizarTabela() {
         posicoesAnteriores[time.id] = index;
 
         if (index < 2) tr.classList.add("top4", "libertadores");
-        else if (index <=3 && index >= 6) tr.classList.add("pre-liberta");
+        else if (index >2 && index <7 ) tr.classList.add("pre-liberta");
         else if (index >= 16) tr.classList.add("rebaixamento");
 
         tr.innerHTML = `
