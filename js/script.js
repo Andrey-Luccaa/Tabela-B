@@ -66,7 +66,6 @@ function formatarUltimos(lista) {
 async function carregarDadosDaPlanilha() {
     try {
         const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF3MDN_XZnTxezQK8llm9RLzwVD5Z_UCqTEMHhmIc4j6CGbqiMKUZoMKjpswygYjGdKwbU14j3QOG2/pub?gid=0";
-";
         const res = await fetch(url);
         const texto = (await res.text()).replace(/^\uFEFF/, '');
 
