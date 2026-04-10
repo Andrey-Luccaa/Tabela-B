@@ -209,8 +209,6 @@ function renderizarTabela() {
         posicoesAnteriores[time.id] = index;
 
         if (index < 4) tr.classList.add("top4", "libertadores");
-        else if (index === 4) tr.classList.add("pre-liberta");
-        else if (index >= 5 && index <= 10) tr.classList.add("sulamericana");
         else if (index >= 16) tr.classList.add("rebaixamento");
 
         tr.innerHTML = `
