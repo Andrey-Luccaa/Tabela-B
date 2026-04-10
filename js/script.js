@@ -47,7 +47,7 @@ function pegarTimePorNome(nome){
 }
 
 function atualizarUltimos(time, resultado) {
-    time.ultimos.push(resultado);f
+    time.ultimos.push(resultado);
 
     if (time.ultimos.length > 5) {
         time.ultimos.shift(); // mantém só os últimos 5
@@ -62,19 +62,11 @@ function formatarUltimos(lista) {
     }).join("");
 }
 
-function atualizarTabelaComJogos() {
-    // RESETAR STATS (Certifique-se que 'ultimos' comece como um array vazio [])
-    dadosTimes = listaOriginal.map(t => ({
-        ...t,
-        v: 0, e: 0, d: 0,
-        gp: 0, gc: 0,
-        ultimos: [] // <--- ISSO É VITAL
-    }));
-
 // ================= TABELA =================
 async function carregarDadosDaPlanilha() {
     try {
-        const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF3MDN_XZnTxezQK8llm9RLzwVD5Z_UCqTEMHhmIc4j6CGbqiMKUZoMKjpswygYjGdKwbU14j3QOG2/pub?gid=0";
+        const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF3MDN_XZnTxezQK8llm9RLzwVD5Z_UCqTEMHhmIc4j6CGbqiMKUZoMKjpswygYjGdKwbU14j3QOG2/pub?gid=0
+";
         const res = await fetch(url);
         const texto = (await res.text()).replace(/^\uFEFF/, '');
 
@@ -113,45 +105,6 @@ async function carregarDadosDaPlanilha() {
 async function carregarJogosDaPlanilha(){
     try{
         const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF3MDN_XZnTxezQK8llm9RLzwVD5Z_UCqTEMHhmIc4j6CGbqiMKUZoMKjpswygYjGdKwbU14j3QOG2/pub?gid=461482428&single=true&output=csv";
-
-const res = await fetch(url);
-        const texto = (await res.text()).replace(/^\uFEFF/, '');
-
-        const linhas = texto.split(/\r?\n/).slice(1);
-        const mapa = {};
-
-        linhas.forEach(l => {
-            const sep = l.includes(";") ? ";" : ",";
-            const col = l.split(sep);
-
-            const nome = normalizarTexto((col[1] || "").replace(/"/g, ""));
-
-            mapa[nome] = {
-                v: parseInt(col[2]) || 0,
-                e: parseInt(col[3]) || 0,
-                d: parseInt(col[4]) || 0,
-                gp: parseInt(col[5]) || 0,
-                gc: parseInt(col[6]) || 0
-            };
-        });
-
-        dadosTimes = listaOriginal.map(t => {
-            const chave = normalizarTexto(t.nome);
-            return mapa[chave] ? { ...t, ...mapa[chave] } : t;
-        });
-
-        renderizarTabela();
-
-    } catch (e) {
-        console.error("Erro:", e);
-        renderizarTabela();
-    }
-}
-
-// ================= JOGOS =================
-async function carregarJogosDaPlanilha(){
-    try{
-        const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQuYYrJrM1Ozyzllocl72jV0AsJON6oWCsQCvhIC0oE4mJWrcrcDFYq_ghSFwjxX2fsYtFi_i2vmHD-/pub?output=csv&gid=1021989896";
 
         const res = await fetch(url);
         const texto = (await res.text()).replace(/^\uFEFF/, '');
@@ -257,6 +210,8 @@ function renderizarTabela() {
         posicoesAnteriores[time.id] = index;
 
         if (index < 4) tr.classList.add("top4", "libertadores");
+        else if (index === 4) tr.classList.add("pre-liberta");
+        else if (index >= 5 && index <= 10) tr.classList.add("sulamericana");
         else if (index >= 16) tr.classList.add("rebaixamento");
 
         tr.innerHTML = `
