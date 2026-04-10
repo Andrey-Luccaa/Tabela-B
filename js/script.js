@@ -105,6 +105,45 @@ async function carregarJogosDaPlanilha(){
     try{
         const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF3MDN_XZnTxezQK8llm9RLzwVD5Z_UCqTEMHhmIc4j6CGbqiMKUZoMKjpswygYjGdKwbU14j3QOG2/pub?gid=461482428&single=true&output=csv";
 
+const res = await fetch(url);
+        const texto = (await res.text()).replace(/^\uFEFF/, '');
+
+        const linhas = texto.split(/\r?\n/).slice(1);
+        const mapa = {};
+
+        linhas.forEach(l => {
+            const sep = l.includes(";") ? ";" : ",";
+            const col = l.split(sep);
+
+            const nome = normalizarTexto((col[1] || "").replace(/"/g, ""));
+
+            mapa[nome] = {
+                v: parseInt(col[2]) || 0,
+                e: parseInt(col[3]) || 0,
+                d: parseInt(col[4]) || 0,
+                gp: parseInt(col[5]) || 0,
+                gc: parseInt(col[6]) || 0
+            };
+        });
+
+        dadosTimes = listaOriginal.map(t => {
+            const chave = normalizarTexto(t.nome);
+            return mapa[chave] ? { ...t, ...mapa[chave] } : t;
+        });
+
+        renderizarTabela();
+
+    } catch (e) {
+        console.error("Erro:", e);
+        renderizarTabela();
+    }
+}
+
+// ================= JOGOS =================
+async function carregarJogosDaPlanilha(){
+    try{
+        const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQuYYrJrM1Ozyzllocl72jV0AsJON6oWCsQCvhIC0oE4mJWrcrcDFYq_ghSFwjxX2fsYtFi_i2vmHD-/pub?output=csv&gid=1021989896";
+
         const res = await fetch(url);
         const texto = (await res.text()).replace(/^\uFEFF/, '');
 
